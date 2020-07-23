@@ -1,11 +1,15 @@
-import 'package:dart/attache.dart';
+import 'package:args/args.dart';
+import 'package:args/command_runner.dart';
+import 'package:dart/commands/deploy_command.dart';
+import 'package:dart/commands/init_command.dart';
 
-void main() {
+void main(List<String> parameters) {
 
-  var attache = Attache(
-    version: '0.0.1',
-  );
+  var runner = CommandRunner('attache', 'Opinionated deployment tool for Laravel');
 
-  attache.run();
+  runner.addCommand(InitCommand());
+  runner.addCommand(DeployCommand());
+
+  runner.run(parameters);
 
 }
