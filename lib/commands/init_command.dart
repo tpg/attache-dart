@@ -19,12 +19,12 @@ class InitCommand extends Command {
   }
 
   @override
-  void run() {
+  void run() async {
     var filename = argResults.options.contains('config')
         ? argResults['config']
         : '.attache.json';
 
-    Configurator().createConfig(filename);
+    await Configurator().createConfig(filename);
     print('Created Attaché configuration file at $filename');
   }
 }

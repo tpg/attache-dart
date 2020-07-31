@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:console/console.dart';
 import 'package:git/git.dart';
 import 'package:path/path.dart' as path;
 
@@ -12,22 +13,33 @@ class Configurator {
         'user': 'user',
         'port': 22,
         'root': '/root/to/project',
+        'master': 'root',
+        'migrate': false,
         'paths': {
           'releases': 'releases',
           'serve': 'live',
           'storage': 'storage',
           'env': '.env',
-        }
+        },
+        'php': {
+          'bin': 'php',
+        },
+        'composer': {
+          'bin': 'composer',
+          'local': false,
+        },
       }
     }
   };
-
 
   /// Get the JSON encoded configuration.
   String encodedConfig(String gitRemote) {
     var encoder = JsonEncoder.withIndent('    ');
     var config = defaultConfig;
-    config['repository'] = gitRemote;
+
+    if (gitRemote.isNotEmpty) {
+      config['repository'] = gitRemote;
+    }
 
     return encoder.convert(config);
   }
@@ -43,7 +55,7 @@ class Configurator {
         runInShell: true,
       );
       var regExp = RegExp(
-        r'^(?<name>.+?)\s(?<url>.+?)\s\(fetch\)$',
+        r'^(?<name>\w+?)\s+(?<url>.+)\s+(?=\(fetch\)$)',
         multiLine: true,
       );
       var matches = regExp.allMatches(result.stdout.toString());
@@ -60,7 +72,23 @@ class Configurator {
 
   /// Allow user to select the Git remote.
   String _selectRemote(Iterable<RegExpMatch> matches) {
-    return matches.first.namedGroup('url');
+
+    print('Found more than one remote. Select the Git remote to clone during deployment:');
+
+    var choices = matches.map((e) {
+      return '${e.namedGroup('name')} : ${e.namedGroup('url')}';
+    }).toList();
+
+    var chooser = Chooser<String>(
+      choices,
+      message: 'Select Git remote: ',
+    );
+
+    var choice = chooser.chooseSync();
+
+    var index = choices.indexOf(choice);
+
+    return matches.elementAt(index).namedGroup('url');
   }
 
   /// Create a new Attaché configuration file.
