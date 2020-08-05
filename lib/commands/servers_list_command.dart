@@ -2,6 +2,8 @@ import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:console/console.dart';
 import 'package:dart/configuration_provider.dart';
+import 'package:dart/console/table.dart';
+import 'package:dart/server.dart';
 
 class ServersListCommand extends Command {
   @override
@@ -25,7 +27,43 @@ class ServersListCommand extends Command {
     var provider = ConfigurationProvider();
     await provider.loadConfigFile(argResults['config']);
 
-    var server = provider.servers().first;
+    printServers(provider.servers());
+  }
+
+  void printServers(Iterable<Server> servers) {
+
+    var consoleTable = ConsoleTable(
+      headers: [
+        'Name',
+        'Host'
+      ],
+      rows: servers.map((Server server) => [
+        _serverName(server),
+        _serverString(server),
+      ])
+    );
+
+    consoleTable.printTable();
+  }
+
+  String _serverName(Server server) {
+    var pen = TextPen();
+
+    pen.setColor(Color.GREEN);
+    pen.text(server.name);
+
+    return pen.toString();
+  }
+
+  String _serverString(Server server) {
+    var pen = TextPen();
+
+    pen.setColor(Color.YELLOW);
+    pen.text(server.user);
+    pen.setColor(Color.GREEN);
+    pen.text('@${server.host}');
+
+    return pen.toString();
   }
 
 }

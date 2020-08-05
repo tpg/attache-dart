@@ -15,15 +15,13 @@ class ConfigurationProvider {
   List<Server> servers() {
     var serverConfig = config['servers'];
 
-    var servers = List<Server>();
+    var servers = <Server>[];
     for (var name in serverConfig.keys) {
       servers.add(Server(
         name: name,
         config: serverConfig[name],
       ));
     }
-
-    print(servers.first.path('releases'));
 
     return servers;
   }

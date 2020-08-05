@@ -7,6 +7,10 @@ class Server {
   String name;
   Map<String, dynamic> config;
 
+  String get host => setting('host');
+  int get port => setting('port');
+  String get user => setting('user');
+
   Server({@required String name, @required Map config}) {
     this.name = name;
     this.config = config;
