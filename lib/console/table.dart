@@ -17,32 +17,43 @@ class ConsoleTable {
     columnWidths = widths ?? _calculateColumnWidths();
   }
 
+  @override
+  String toString() {
+    var pen = build();
+    return pen.toString();
+  }
+
   void printTable() {
+    var pen = build();
+    pen.print();
+  }
+
+  TextPen build() {
     columnWidths = _calculateColumnWidths();
     var pen = TextPen();
 
-    _printRow(pen, headers);
+    _row(pen, headers);
 
-    pen.buffer.clear();
-    _tableDivider(pen);
+    _divider(pen);
 
     rows.forEach((row) {
-      pen.buffer.clear();
-      _printRow(pen, row);
+      _row(pen, row);
     });
+
+    return pen;
   }
 
-  void _printRow(TextPen pen, Iterable<String> row) {
-    _tableBorder(pen);
+  void _row(TextPen pen, Iterable<String> row) {
+    _border(pen);
 
     var column = 0;
     row.forEach((cell) {
       pen.setColor(Color.WHITE);
       pen.text(' ${cell.padRight(columnWidths[column])} ');
-      _tableBorder(pen);
+      _border(pen);
       column++;
     });
-    pen.print();
+    pen.text('\n');
   }
 
   List<int> _calculateColumnWidths() {
@@ -59,22 +70,22 @@ class ConsoleTable {
     return widths;
   }
 
-  void _tableBorder(TextPen pen) {
+  void _border(TextPen pen) {
     pen.setColor(Color.WHITE);
     pen.text('|');
   }
 
-  void _tableDivider(TextPen pen) {
-    _tableBorder(pen);
+  void _divider(TextPen pen) {
+    _border(pen);
 
     pen.setColor(Color.WHITE);
     columnWidths.forEach((width) {
       pen.text('-');
       pen.text(''.padRight(width, '-'));
       pen.text('-');
-      _tableBorder(pen);
+      _border(pen);
     });
 
-    pen.print();
+    pen.text('\n');
   }
 }

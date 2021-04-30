@@ -32,14 +32,14 @@ class ServersListCommand extends Command {
 
   void printServers(Iterable<Server> servers) {
 
-    var consoleTable = ConsoleTable(
+      var consoleTable = ConsoleTable(
       headers: [
         'Name',
         'Host'
       ],
       rows: servers.map((Server server) => [
-        _serverName(server),
-        _serverString(server),
+        server.name,
+        server.host,
       ])
     );
 

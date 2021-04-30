@@ -32,16 +32,26 @@ class Configurator {
     }
   };
 
-  /// Get the JSON encoded configuration.
-  String encodedConfig(String gitRemote) {
-    var encoder = JsonEncoder.withIndent('    ');
+  String repository;
+
+  void setGitRemote(String gitRemote) {
+    repository = gitRemote;
+  }
+
+  Map<String, dynamic> asMap() {
     var config = defaultConfig;
 
-    if (gitRemote.isNotEmpty) {
-      config['repository'] = gitRemote;
+    if (repository.isNotEmpty) {
+      config['repository'] = repository;
     }
 
-    return encoder.convert(config);
+    return config;
+  }
+
+  @override
+  String toString() {
+    var encoder = JsonEncoder.withIndent('    ');
+    return encoder.convert(asMap());
   }
 
   /// Get the Git remote from the Git config.
@@ -94,7 +104,8 @@ class Configurator {
   /// Create a new Attaché configuration file.
   void createConfig(String filename) async {
     var remote = await _getGitRemote();
+    setGitRemote(remote);
 
-    await File(filename).writeAsString(encodedConfig(remote));
+    await File(filename).writeAsString(toString());
   }
 }

@@ -1,0 +1,23 @@
+{
+  "repository": "git@remote.git",
+  "servers": {
+    "production": {
+      "host": "production.test",
+      "port": 22,
+      "user": "user",
+      "root": "/path/to/root",
+      "branch": "master",
+      "paths": {
+        "releases": "releases",
+        "serve": "live",
+        "env": ".env",
+        "storage": "storage"
+      },
+      "scripts": {
+        "before-deploy": [
+          "before-deploy-script"
+        ]
+      }
+    }
+  }
+}

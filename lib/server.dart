@@ -10,8 +10,10 @@ class Server {
   String get host => setting('host');
   int get port => setting('port');
   String get user => setting('user');
+  String get root => setting('root');
+  String get branch => setting('branch');
 
-  Server({@required String name, @required Map config}) {
+  Server({@required String name, @required Map<String, dynamic> config}) {
     this.name = name;
     this.config = config;
   }
